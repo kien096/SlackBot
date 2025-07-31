@@ -1,11 +1,20 @@
 import requests
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 
-SLACK_BOT_TOKEN = os.getenv("xoxb-7808228366695-9304782153152-YQtvYKamZxkZ9ohOQJvqhqTK")
-CHANNEL_ID = os.getenv("C098QCKTMH7")  # Ex: C012ABC345
+# Load environment variables from .env file
+load_dotenv()
+
+# Đọc từ environment variables
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
 
 def send_daily_standup():
+    if not SLACK_BOT_TOKEN or not CHANNEL_ID:
+        print("❌ Thiếu SLACK_BOT_TOKEN hoặc SLACK_CHANNEL_ID")
+        return
+    
     message = f"""
 *🌞 Daily Standup - {datetime.now().strftime('%Y-%m-%d')}*
 1. Hôm qua bạn đã làm gì?
@@ -14,6 +23,7 @@ def send_daily_standup():
 
 👉 Vui lòng reply trực tiếp vào thread này.
     """
+    
     res = requests.post(
         "https://slack.com/api/chat.postMessage",
         headers={
